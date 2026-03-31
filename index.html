@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Ti En Tu Cumpleaños 💌</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .book-container {
+            width: 100%;
+            max-width: 500px;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(245, 240, 255, 0.98));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .page {
+            display: none;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .page-title {
+            font-size: 2.2em;
+            color: #667eea;
+            margin-bottom: 15px;
+            animation: fadeIn 0.8s ease-out;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .page-text {
+            color: #333;
+            font-size: 1.15em;
+            line-height: 1.8;
+            margin: 25px 0;
+            animation: fadeIn 1s ease-out 0.2s both;
+            font-weight: 500;
+        }
+
+        .emoji-decoration {
+            font-size: 2.5em;
+            margin: 20px 0;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        .emoji-bounce {
+            font-size: 3em;
+            animation: bounce 2s ease-in-out infinite, fadeIn 1s ease-out 0.4s both;
+            margin: 15px 0;
+        }
+
+        .highlight {
+            color: #764ba2;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .special-text {
+            color: #f093fb;
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        .page-counter {
+            color: #999;
+            font-size: 0.85em;
+            margin-top: auto;
+            padding-top: 30px;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        /* BOTONES */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+            animation: fadeIn 1s ease-out 0.6s both;
+        }
+
+        button {
+            padding: 13px 28px;
+            font-size: 0.95em;
+            border: 2.5px solid #667eea;
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            background: rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            transform: translateY(-3px);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .next-btn {
+            border-color: #f093fb;
+            color: #f093fb;
+            background: rgba(240, 147, 251, 0.15);
+        }
+
+        .next-btn:hover {
+            background: rgba(240, 147, 251, 0.3);
+            box-shadow: 0 8px 25px rgba(240, 147, 251, 0.3);
+        }
+
+        .interactive-element {
+            display: inline-block;
+            padding: 15px 25px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px dashed #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: fadeIn 1s ease-out 0.4s both;
+        }
+
+        .interactive-element:hover {
+            background: rgba(102, 126, 234, 0.25);
+            transform: scale(1.05);
+        }
+
+        .hidden-text {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.4s ease-out;
+            color: #764ba2;
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+
+        .hidden-text.show {
+            max-height: 200px;
+            opacity: 1;
+            margin-top: 15px;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            animation: fall 3s linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .rating-stars {
+            font-size: 2.5em;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+
+        .star {
+            display: inline-block;
+            margin: 0 5px;
+            transition: all 0.2s;
+            filter: grayscale(100%);
+        }
+
+        .star:hover,
+        .star.active {
+            transform: scale(1.3);
+            filter: grayscale(0%);
+        }
+    </style>
+</head>
+<body>
+    <div class="book-container">
+        <div class="content">
+            <!-- PÁGINA 1: DISCULPA Y INTRODUCCIÓN -->
+            <div class="page active" id="page1">
+                <h1 class="page-title">Perdón por el Atraso 💌</h1>
+                
+                <div class="emoji-decoration">😊</div>
+                
+                <p class="page-text">
+                    Sé que llegué tarde,
+                    <br>
+                    pero quería hacerte algo <span class="special-text">especial</span>.
+                </p>
+                
+                <p class="page-text" style="font-size: 1em; color: #666; margin-top: 30px;">
+                    Espero que disfrutes este pequeño libro hecho con cariño para ti.
+                </p>
+                
+                <div class="emoji-bounce">📖</div>
+                
+                <div class="page-counter">Página 1 de 9</div>
+            </div>
+
+            <!-- PÁGINA 2: FELIZ CUMPLEAÑOS -->
+            <div class="page" id="page2">
+                <h1 class="page-title">¡Feliz Cumpleaños! 🎉</h1>
+                
+                <div class="emoji-decoration">🎈 🎈 🎈</div>
+                
+                <p class="page-text">
+                    Hoy es <span class="highlight">TU DÍA</span>,
+                    <br>
+                    Un día para celebrarte,
+                    <br>
+                    Un día para sentir lo especial que eres.
+                </p>
+                
+                <div class="emoji-bounce">🎂</div>
+                
+                <div class="page-counter">Página 2 de 9</div>
+            </div>
+
+            <!-- PÁGINA 3: INTERACTIVA - REVELACIÓN -->
+            <div class="page" id="page3">
+                <h1 class="page-title">Algo Para Ti 💝</h1>
+                
+                <div class="emoji-decoration">✨</div>
+                
+                <p class="page-text">
+                    Toca para descubrir lo que pienso de ti:
+                </p>
+                
+                <div class="interactive-element" onclick="revelarTexto(this)">
+                    Haz clic aquí ➡️
+                </div>
+                
+                <div class="hidden-text" id="hidden1">
+                    "Eres alguien que ilumina los días de quienes te rodean"
+                </div>
+                
+                <div class="page-counter">Página 3 de 9</div>
+            </div>
+
+            <!-- PÁGINA 4: CUALIDADES -->
+            <div class="page" id="page4">
+                <h1 class="page-title">Lo Que Admiro De Ti 💖</h1>
+                
+                <div class="emoji-decoration">⭐</div>
+                
+                <p class="page-text">
+                    Tu bondad sin límites,
+                    <br>
+                    Tu sentido del humor,
+                    <br>
+                    Tu forma de escuchar,
+                    <br>
+                    Tu corazón generoso.
+                </p>
+                
+                <div class="emoji-bounce">😊</div>
+                
+                <div class="page-counter">Página 4 de 9</div>
+            </div>
+
+            <!-- PÁGINA 5: INTERACTIVA - VALORACIÓN -->
+            <div class="page" id="page5">
+                <h1 class="page-title">¿Cuánto Vales? 🌟</h1>
+                
+                <div class="emoji-decoration">👑</div>
+                
+                <p class="page-text">
+                    Eres invaluable, pero déjame mostrarte:
+                </p>
+                
+                <div class="rating-stars" id="ratingStars">
+                    <span class="star" onclick="rate(1, event)">⭐</span>
+                    <span class="star" onclick="rate(2, event)">⭐</span>
+                    <span class="star" onclick="rate(3, event)">⭐</span>
+                    <span class="star" onclick="rate(4, event)">⭐</span>
+                    <span class="star" onclick="rate(5, event)">⭐</span>
+                </div>
+                
+                <p class="page-text" style="font-size: 0.95em; color: #666; margin-top: 20px;">
+                    (¡Todas las estrellas del universo!)
+                </p>
+                
+                <div class="page-counter">Página 5 de 9</div>
+            </div>
+
+            <!-- PÁGINA 6: MOMENTOS ESPECIALES -->
+            <div class="page" id="page6">
+                <h1 class="page-title">Nuestros Momentos 🎭</h1>
+                
+                <div class="emoji-decoration">🎊</div>
+                
+                <p class="page-text">
+                    Cada conversación contigo es especial,
+                    <br>
+                    Cada risa compartida es sincera,
+                    <br>
+                    Cada apoyo que me das es invaluable.
+                </p>
+                
+                <div class="emoji-bounce">💫</div>
+                
+                <div class="page-counter">Página 6 de 9</div>
+            </div>
+
+            <!-- PÁGINA 7: INTERACTIVA - DESEOS -->
+            <div class="page" id="page7">
+                <h1 class="page-title">Mis Deseos Para Ti 🌈</h1>
+                
+                <div class="emoji-decoration">🎁</div>
+                
+                <p class="page-text">
+                    Haz clic para activar mis deseos:
+                </p>
+                
+                <div class="interactive-element" onclick="mostrarDeseos(this)">
+                    ¡Revela mis deseos! ✨
+                </div>
+                
+                <div class="hidden-text" id="hidden2">
+                    🎯 Que logres tus sueños
+                    <br>
+                    😊 Que seas feliz cada día
+                    <br>
+                    💖 Que brilles siempre
+                    <br>
+                    🌟 Que disfrutes cada momento
+                </div>
+                
+                <div class="page-counter">Página 7 de 9</div>
+            </div>
+
+            <!-- PÁGINA 8: MENSAJE FINAL -->
+            <div class="page" id="page8">
+                <h1 class="page-title">Para Ti Hoy 💜</h1>
+                
+                <div class="emoji-decoration">🎈</div>
+                
+                <p class="page-text">
+                    Que este día sea <span class="highlight">lleno de alegría</span>,
+                    <br>
+                    Que sientas <span class="highlight">lo especial que eres</span>,
+                    <br>
+                    Que celebres con <span class="highlight">quienes te aman</span>.
+                </p>
+                
+                <p class="page-text" style="font-size: 1.3em; margin-top: 30px;">
+                    <span class="special-text">¡Feliz Cumpleaños! 🥳</span>
+                </p>
+                
+                <div class="page-counter">Página 8 de 9</div>
+            </div>
+
+            <!-- PÁGINA 9: CIERRE MÁGICO -->
+            <div class="page" id="page9">
+                <h1 class="page-title">Con Todo Mi Cariño 💌</h1>
+                
+                <div class="emoji-decoration">✨ ✨ ✨</div>
+                
+                <p class="page-text">
+                    Gracias por ser quien eres,
+                    <br>
+                    Gracias por estar en mi vida,
+                    <br>
+                    Gracias por hacer cada día mejor.
+                </p>
+                
+                <p class="page-text" style="font-size: 1.05em; margin-top: 30px;">
+                    <span class="highlight">Te deseo lo mejor siempre.</span>
+                </p>
+                
+                <button onclick="activarConfeti()" style="margin-top: 30px; border-color: #f093fb; color: #f093fb; background: rgba(240, 147, 251, 0.2); font-size: 1em; padding: 15px 30px;">
+                    🎊 ¡Celebra Conmigo! 🎊
+                </button>
+                
+                <div class="page-counter">Página 9 de 9</div>
+            </div>
+
+            <!-- BOTONES DE NAVEGACIÓN -->
+            <div class="button-group">
+                <button id="prevBtn" onclick="cambiarPagina(-1)">← Atrás</button>
+                <button class="next-btn" id="nextBtn" onclick="cambiarPagina(1)">Siguiente →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let paginaActual = 1;
+        const totalPaginas = 9;
+
+        function actualizarBotones() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            if (paginaActual === 1) {
+                prevBtn.disabled = true;
+                prevBtn.style.opacity = '0.4';
+            } else {
+                prevBtn.disabled = false;
+                prevBtn.style.opacity = '1';
+            }
+
+            if (paginaActual === totalPaginas) {
+                nextBtn.textContent = 'Volver al Inicio 💜';
+                nextBtn.onclick = function() { mostrarPagina(1); };
+            } else {
+                nextBtn.textContent = 'Siguiente →';
+                nextBtn.onclick = function() { cambiarPagina(1); };
+            }
+        }
+
+        function mostrarPagina(numero) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page' + numero).classList.add('active');
+            
+            paginaActual = numero;
+            actualizarBotones();
+            
+            // Limpiar elementos interactivos
+            document.querySelectorAll('.hidden-text').forEach(el => {
+                el.classList.remove('show');
+            });
+            document.querySelectorAll('.star').forEach(el => {
+                el.classList.remove('active');
+            });
+        }
+
+        function cambiarPagina(direccion) {
+            let nueva = paginaActual + direccion;
+            
+            if (nueva < 1) nueva = 1;
+            if (nueva > totalPaginas) {
+                mostrarPagina(totalPaginas);
+                return;
+            }
+            
+            mostrarPagina(nueva);
+        }
+
+        function revelarTexto(element) {
+            const hiddenText = element.nextElementSibling;
+            hiddenText.classList.toggle('show');
+        }
+
+        function mostrarDeseos(element) {
+            const hiddenText = element.nextElementSibling;
+            hiddenText.classList.toggle('show');
+        }
+
+        function rate(stars, event) {
+            event.stopPropagation();
+            document.querySelectorAll('#ratingStars .star').forEach((star, index) => {
+                if (index < stars) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        function activarConfeti() {
+            for (let i = 0; i < 60; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = ['#667eea', '#764ba2', '#f093fb', '#ff69b4', '#ffd700'][Math.floor(Math.random() * 5)];
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 25);
+            }
+        }
+
+        actualizarBotones();
+    </script>
+</body>
+</html>
